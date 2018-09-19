@@ -12,7 +12,7 @@ sudo apt-get install python-dev postgresql libpq-dev python-pip virtualenv git-c
 echo "Creating and activating virtual environment…"
 sudo mkdir -p /usr/lib/ckan/default
 sudo chown `whoami` /usr/lib/ckan/default
-virtualenv  /usr/lib/ckan/default
+virtualenv --python=python2 /usr/lib/ckan/default
 . /usr/lib/ckan/default/bin/activate
 
 # Install setup tools
