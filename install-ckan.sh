@@ -6,13 +6,13 @@ sudo apt-get update
 
 # Install the required packages
 echo "Installing required packages…"
-sudo apt-get install python-dev postgresql libpq-dev python-pip python-virtualenv git-core solr-jetty openjdk-8-jdk redis-server
+sudo apt-get install python-dev postgresql libpq-dev python-pip virtualenv git-core solr-jetty openjdk-8-jdk redis-server
 
 # Create and activate a virtual environment
 echo "Creating and activating virtual environment…"
 sudo mkdir -p /usr/lib/ckan/default
 sudo chown `whoami` /usr/lib/ckan/default
-virtualenv --no-site-packages /usr/lib/ckan/default
+virtualenv  /usr/lib/ckan/default
 . /usr/lib/ckan/default/bin/activate
 
 # Install setup tools
