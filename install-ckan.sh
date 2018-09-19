@@ -44,7 +44,11 @@ sudo service postgresql restart
 
 # Create default Postgres user
 # (You'll need to enter a password)
-sudo -u postgres createuser -S -D -R -P ckan_default
+# sudo -u postgres createuser -S -D -R -P ckan_default
+
+psql -U postgres -c "CREATE USER ckan_default \
+    WITH PASSWORD 'ckan_default' \
+    NOSUPERUSER NOCREATEDB NOCREATEROLE;"
 
 # Create ckan_default database owned by the ckan_default user
 sudo -u postgres createdb -O ckan_default ckan_default -E utf-8
@@ -67,5 +71,5 @@ sed -i 's/ckan.site_url =/ckan.site_url = http://127.0.0.1:5000/g' /etc/ckan/def
 sed -i 's/NO_START=.*/NO_START=0&\nJETTY_HOST=127.0.0.1&\nJETTY_PORT=8983/g' /etc/default/jetty9
 sudo service jetty9 restart
 # Verify that Solr is running
-curl -I http://www.example.orghttp://localhost:8983/solr/
+curl -I http://localhost:8983/solr/
 
