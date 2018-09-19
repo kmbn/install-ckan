@@ -65,7 +65,7 @@ paster make-config ckan /etc/ckan/default/development.ini
 
 # Specify a site url and give it a better name
 sed -i 's/ckan.site_id = default/ckan.site_id = Default Portal (Development)/g' /etc/ckan/default/development.ini
-sed -i 's/ckan.site_url =/ckan.site_url = http://127.0.0.1:5000/g' /etc/ckan/default/development.ini
+sed -i 's/ckan.site_url =/ckan.site_url = http:\/\/127.0.0.1:5000/g' /etc/ckan/default/development.ini
 
 # Set up Solr (a fresh install will already have NO_START=0)
 echo "JETTY_HOST=127.0.0.1" >> /etc/default/jetty9
