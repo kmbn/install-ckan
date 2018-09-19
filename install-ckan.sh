@@ -3,7 +3,6 @@
 # Update apt
 echo "Updating apt…"
 sudo apt-get update
-sudo apt-get upgrade
 
 # Install the required packages
 echo "Installing required packages…"
