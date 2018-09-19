@@ -8,12 +8,18 @@ sudo apt-get update
 echo "Installing required packages…"
 sudo apt-get install python-dev postgresql libpq-dev python-pip virtualenv git-core solr-jetty openjdk-8-jdk redis-server
 
+# Setup symlinks for ease of use
+mkdir -p ~/ckan/lib
+sudo ln -s ~/ckan/lib /usr/lib/ckan
+mkdir -p ~/ckan/etc
+sudo ln -s ~/ckan/etc /etc/ckan
+
 # Create and activate a virtual environment
 echo "Creating and activating virtual environment…"
 sudo mkdir -p /usr/lib/ckan/default
 sudo chown `whoami` /usr/lib/ckan/default
 virtualenv --python=python2 /usr/lib/ckan/default
-. /usr/lib/ckan/default/bin/activate
+. /usr/lib/ckan/default/bin/activate || exit 1
 
 # Install setup tools
 # (Is this necessary? Should we use a more recent version instead?)
@@ -28,8 +34,8 @@ pip install -r /usr/lib/ckan/default/src/ckan/requirements.txt
 # Deactivate and reactivate the virtual environment
 # (Is this necessary to ensure that we're using the venv's paster, etc.?
 # Or is this just to prevent human error?)
-deactivate
-. /usr/lib/ckan/default/bin/activate
+deactivate || exit 1
+. /usr/lib/ckan/default/bin/activate || exit 1
 
 # Start Postgres and make sure it's set to use UTF-8 encoding
 echo "Setting Postgres encoding to UTF-8"
