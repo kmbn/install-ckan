@@ -85,8 +85,16 @@ curl -O http://www-eu.apache.org/dist/lucene/solr/6.6.5/solr-6.6.5.tgz
 mv solr-6.6.5.tgz /opt/solr-6.6.5.tgz
 tar xzf /opt/solr-6.6.5.tgz solr-6.6.5/bin/install_solr_service.sh --strip-components=2
 sudo bash ./install_solr_service.sh /opt/solr-6.6.5.tgz
-sudo service solr restart
+
+# Create a default CKAN config for CKAN cores, linked to the CKAN solr schema
+cp -rf /opt/solr/server/solr/configsets/basic_configs /opt/solr/server/solr/configsets/default_ckan_configs
+rm /opt/solr/server/solr/configsets/default_ckan_configs/conf/managed-schema
+sudo ln -s /usr/lib/ckan/default/src/ckan/ckan/config/solr/schema.xml /opt/solr/server/solr/configsets/default_ckan_configs/conf/schema.xml
+
 sudo service jetty9 restart
+
+sudo su - solr -c "/opt/solr/bin/solr create -c ckan_default -n default_ckan_configs"
+
 # Verify that Solr is running
 curl -I http://localhost:8983/solr/
-
+curl -I http://localhost:8983/solr/ckan_default/
