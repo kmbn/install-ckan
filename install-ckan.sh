@@ -69,7 +69,14 @@ sed -i 's/ckan.site_url =/ckan.site_url = http:\/\/127.0.0.1:5000/g' /etc/ckan/d
 
 # Set up Solr (a fresh install will already have NO_START=0)
 echo "JETTY_HOST=127.0.0.1" >> /etc/default/jetty9
-echo "JETTY_PORT=8983" >> /etc/default/jetty9
+echo "JETTY_PORT=8080" >> /etc/default/jetty9
+echo "JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/" >> /etc/default/jetty9
+
+curl -O http://www-eu.apache.org/dist/lucene/solr/6.6.5/solr-6.6.5.tgz
+mv solr-6.6.5.tgz /opt/solr-6.6.5.tgz
+tar xzf /opt/solr-6.6.5.tgz solr-6.6.5/bin/install_solr_service.sh --strip-components=2
+sudo bash ./install_solr_service.sh /opt/solr-6.6.5.tgz
+sudo service solr restart
 sudo service jetty9 restart
 # Verify that Solr is running
 curl -I http://localhost:8983/solr/
