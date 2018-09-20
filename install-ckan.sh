@@ -47,7 +47,7 @@ sudo service postgresql restart
 # sudo -u postgres createuser -S -D -R -P ckan_default
 
 sudo -u postgres psql -U postgres -c "CREATE USER ckan_default \
-    WITH PASSWORD 'ckan_default' \
+    WITH PASSWORD 'pass' \
     NOSUPERUSER NOCREATEDB NOCREATEROLE;"
 
 # Create ckan_default database owned by the ckan_default user
