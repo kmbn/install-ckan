@@ -82,7 +82,7 @@ echo "JETTY_HOST=127.0.0.1" >> /etc/default/jetty9
 echo "JETTY_PORT=8983" >> /etc/default/jetty9
 
 # curl -O http://www-eu.apache.org/dist/lucene/solr/6.6.5/solr-6.6.5.tgz
-curl -O http://www-eu.apache.org/dist/lucene/solr/5.2.1/solr-5.2.1.tgz
+curl -O http://archive.apache.org/dist/lucene/solr/5.2.1/solr-5.2.1.tgz
 # mv solr-6.6.5.tgz /opt/solr-6.6.5.tgz
 mv solr-5.2.1.tgz /opt/solr-5.2.1.tgz
 # tar xzf /opt/solr-6.6.5.tgz solr-6.6.5/bin/install_solr_service.sh --strip-components=2
@@ -99,12 +99,20 @@ sudo service jetty9 restart
 
 sudo su - solr -c "/opt/solr/bin/solr create -c ckan_default -n default_ckan_configs"
 
+# Patch the config
+rm -rf /var/solr/data/ckan_default/conf/managed_schema
+sudo ln -s /usr/lib/ckan/default/src/ckan/ckan/config/solr/schema.xml /var/solr/data/ckan_default/conf/schema.xml
+
+sudo service solr restart
+
 # Verify that Solr is running
 curl -I http://localhost:8983/solr/
-curl -I http://localhost:8983/solr/ckan_default/
+curl -I http://localhost:8983/solr/ckan_default/select?q=*
 
 # Set Solr URL for CKAN to use
 sed -i 's/#solr_url = http:\/\/127.0.0.1:8983\/solr/solr_url = http:\/\/127.0.0.1:8983/solr\/ckan_default/g' /etc/ckan/default/development.ini
+
+echo "solr_url = http://127.0.0.1:8983/solr/ckan_default" >> /etc/ckan/default/development.ini
 
 # Link to CKAN's who.ini, which must be located in the same directory as the portal's ini
 ln -s /usr/lib/ckan/default/src/ckan/who.ini /etc/ckan/default/who.ini
@@ -126,4 +134,7 @@ sed -i 's/#ckan.datastore.read_url = postgresql:\/\/datastore_default:pass@local
 sed -i '/^ckan.plugins/ s/$/ datastore/' /etc/ckan/default/development.ini
 # Set the permissions
 paster --plugin=ckan datastore set-permissions -c /etc/ckan/default/development.ini | sudo -u postgres psql --set ON_ERROR_STOP=1
+
+
+paster serve /etc/ckan/default/development.ini
 
