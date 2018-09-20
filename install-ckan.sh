@@ -101,7 +101,8 @@ sudo su - solr -c "/opt/solr/bin/solr create -c ckan_default -n default_ckan_con
 
 # Patch the config
 rm -rf /var/solr/data/ckan_default/conf/managed_schema
-sudo ln -s /usr/lib/ckan/default/src/ckan/ckan/config/solr/schema.xml /var/solr/data/ckan_default/conf/schema.xml
+# This has to be copied--a symlink won't work.
+cp /usr/lib/ckan/default/src/ckan/ckan/config/solr/schema.xml /var/solr/data/ckan_default/conf/schema.xml
 
 sudo service solr restart
 
