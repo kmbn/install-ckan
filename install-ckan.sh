@@ -6,7 +6,7 @@ sudo apt-get update
 
 # Install the required packages
 echo "Installing required packages…"
-sudo apt-get install python-dev postgresql libpq-dev python-pip virtualenv git-core solr-jetty openjdk-8-jdk redis-server
+sudo apt-get install python-dev postgresql libpq-dev python-pip virtualenv git-core jetty9 openjdk-8-jdk redis-server
 
 # Setup symlinks for ease of use
 mkdir -p ~/ckan/lib
