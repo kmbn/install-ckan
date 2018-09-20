@@ -100,7 +100,7 @@ curl -I http://localhost:8983/solr/
 curl -I http://localhost:8983/solr/ckan_default/
 
 # Set Solr URL for CKAN to use
-sed -i 's/#solr_url = http:\/\/127.0.0.1:8983\/solr\/solr_url = http:\/\/127.0.0.1:8983/solr\/ckan_default/g' /etc/ckan/default/development.ini
+sed -i 's/#solr_url = http:\/\/127.0.0.1:8983\/solr/solr_url = http:\/\/127.0.0.1:8983/solr\/ckan_default/g' /etc/ckan/default/development.ini
 
 # Link to CKAN's who.ini, which must be located in the same directory as the portal's ini
 ln -s /usr/lib/ckan/default/src/ckan/who.ini /etc/ckan/default/who.ini
