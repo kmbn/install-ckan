@@ -150,4 +150,5 @@ rm -rf /var/solr/data/ckan/conf/managed_schema
 cp /usr/lib/ckan/default/src/ckan/ckan/config/solr/schema.xml /var/solr/data/ckan/conf/schema.xml
 sudo service solr restart
 
-nosetests --ckan --with-pylons=/root/ckan/lib/default/src/ckan/test-core.ini ckan ckanext
+cd ~/ckan/lib/default/src/ckan
+nosetests --ckan --with-pylons=test-core.ini ckan ckanext
