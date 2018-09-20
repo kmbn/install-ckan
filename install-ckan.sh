@@ -63,8 +63,8 @@ sudo chown -R `whoami` ~/ckan/etc
 echo "Creating CKAN config file development.ini…"
 paster make-config ckan /etc/ckan/default/development.ini
 
-# Specify a site url and give it a better name
-sed -i 's/ckan.site_id = default/ckan.site_id = Default Portal (Development)/g' /etc/ckan/default/development.ini
+# Specify a site url and give it a site id, used for search (not the same thing as the site's name!)
+sed -i 's/ckan.site_id = default/ckan.site_id = ckan_default_development/g' /etc/ckan/default/development.ini
 sed -i 's/ckan.site_url =/ckan.site_url = http:\/\/127.0.0.1:5000/g' /etc/ckan/default/development.ini
 
 # Install the real Java, which Solr requires. We know it will work with Java8
@@ -100,7 +100,26 @@ curl -I http://localhost:8983/solr/
 curl -I http://localhost:8983/solr/ckan_default/
 
 # Set Solr URL for CKAN to use
-sed -i 's/#solr_url = http:\/\/127.0.0.1:8983\/solr\/#solr_url = http:\/\/127.0.0.1:8983/solr\/ckan_default/g' /etc/ckan/default/development.ini
+sed -i 's/#solr_url = http:\/\/127.0.0.1:8983\/solr\/solr_url = http:\/\/127.0.0.1:8983/solr\/ckan_default/g' /etc/ckan/default/development.ini
 
 # Link to CKAN's who.ini, which must be located in the same directory as the portal's ini
 ln -s /usr/lib/ckan/default/src/ckan/who.ini /etc/ckan/default/who.ini
+
+# Create CKAN's database tables
+cd /usr/lib/ckan/default/src/ckan
+paster db init -c /etc/ckan/default/development.ini
+
+# Setup the datastore tables and permissions
+# Create the datastore user
+sudo -u postgres psql -U postgres -c "CREATE USER datastore_default \
+    WITH PASSWORD 'pass' \
+    NOSUPERUSER NOCREATEDB NOCREATEROLE;"
+# Create the datastore database owned by ckan_default
+sudo -u postgres createdb -O ckan_default datastore_default -E utf-8
+# Update the .ini
+sed -i 's/#ckan.datastore.write_url = postgresql:\/\/ckan_default:pass@localhost\/datastore_default/ckan.datastore.write_url = postgresql:\/\/ckan_default:pass@localhost\/datastore_default/g' /etc/ckan/default/development.ini
+sed -i 's/#ckan.datastore.read_url = postgresql:\/\/datastore_default:pass@localhost\/datastore_default/ckan.datastore.read_url = postgresql:\/\/datastore_default:pass@localhost\/datastore_default/g' /etc/ckan/default/development.ini
+sed -i '/^ckan.plugins/ s/$/ datastore/' /etc/ckan/default/development.ini
+# Set the permissions
+paster --plugin=ckan datastore set-permissions -c /etc/ckan/default/development.ini | sudo -u postgres psql --set ON_ERROR_STOP=1
+
