@@ -79,7 +79,7 @@ EOL
 
 # Set up Solr (a fresh install will already have NO_START=0)
 echo "JETTY_HOST=127.0.0.1" >> /etc/default/jetty9
-echo "JETTY_PORT=8080" >> /etc/default/jetty9
+echo "JETTY_PORT=8983" >> /etc/default/jetty9
 
 curl -O http://www-eu.apache.org/dist/lucene/solr/6.6.5/solr-6.6.5.tgz
 mv solr-6.6.5.tgz /opt/solr-6.6.5.tgz
