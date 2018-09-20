@@ -93,6 +93,7 @@ sudo bash ./install_solr_service.sh /opt/solr-5.2.1.tgz
 # Create a default CKAN config for CKAN cores, linked to the CKAN solr schema
 cp -rf /opt/solr/server/solr/configsets/basic_configs /opt/solr/server/solr/configsets/default_ckan_configs
 rm /opt/solr/server/solr/configsets/default_ckan_configs/conf/managed-schema
+# maybe if this is a copy, it will be copied over and we can save some work?
 sudo ln -s /usr/lib/ckan/default/src/ckan/ckan/config/solr/schema.xml /opt/solr/server/solr/configsets/default_ckan_configs/conf/schema.xml
 
 sudo service jetty9 restart
@@ -137,5 +138,16 @@ sed -i '/^ckan.plugins/ s/$/ datastore/' /etc/ckan/default/development.ini
 paster --plugin=ckan datastore set-permissions -c /etc/ckan/default/development.ini | sudo -u postgres psql --set ON_ERROR_STOP=1
 
 
-paster serve /etc/ckan/default/development.ini
+# paster serve /etc/ckan/default/development.ini
 
+# Get ready for tests
+
+sudo -u postgres createdb -O ckan_default ckan_test -E utf-8
+sudo -u postgres createdb -O ckan_default datastore_test -E utf-8
+paster --plugin=ckan datastore set-permissions -c ~/ckan/lib/default/src/ckan/test-core.ini | sudo -u postgres psql
+sudo su - solr -c "/opt/solr/bin/solr create -c ckan -n default_ckan_configs"
+rm -rf /var/solr/data/ckan/conf/managed_schema
+cp /usr/lib/ckan/default/src/ckan/ckan/config/solr/schema.xml /var/solr/data/ckan/conf/schema.xml
+sudo service solr restart
+
+nosetests --ckan --with-pylons=/root/ckan/lib/default/src/ckan/test-core.ini ckan ckanext
