@@ -6,7 +6,7 @@ sudo apt-get update
 
 # Install the required packages
 echo "Installing required packages…"
-sudo apt-get install python-dev postgresql libpq-dev python-pip virtualenv git-core jetty9 openjdk-8-jdk redis-server
+sudo apt-get install python-dev postgresql libpq-dev python-pip virtualenv git-core jetty9 redis-server
 
 # Setup symlinks for ease of use
 mkdir -p ~/ckan/lib
@@ -67,10 +67,19 @@ paster make-config ckan /etc/ckan/default/development.ini
 sed -i 's/ckan.site_id = default/ckan.site_id = Default Portal (Development)/g' /etc/ckan/default/development.ini
 sed -i 's/ckan.site_url =/ckan.site_url = http:\/\/127.0.0.1:5000/g' /etc/ckan/default/development.ini
 
+# Install the real Java, which Solr requires. We know it will work with Java8
+sudo add-apt-repository ppa:webupd8team/java
+sudo apt-get update
+sudo apt-get install oracle-java8-installer
+sudo apt-get install oracle-java8-set-default
+cat >> /etc/environment <<EOL
+JAVA_HOME=/usr/lib/jvm/java-8-oracle
+JRE_HOME=/usr/lib/jvm/java-8-oracle/jre
+EOL
+
 # Set up Solr (a fresh install will already have NO_START=0)
 echo "JETTY_HOST=127.0.0.1" >> /etc/default/jetty9
 echo "JETTY_PORT=8080" >> /etc/default/jetty9
-echo "JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/" >> /etc/default/jetty9
 
 curl -O http://www-eu.apache.org/dist/lucene/solr/6.6.5/solr-6.6.5.tgz
 mv solr-6.6.5.tgz /opt/solr-6.6.5.tgz
