@@ -94,7 +94,8 @@ sudo bash ./install_solr_service.sh /opt/solr-5.2.1.tgz
 cp -rf /opt/solr/server/solr/configsets/basic_configs /opt/solr/server/solr/configsets/default_ckan_configs
 rm /opt/solr/server/solr/configsets/default_ckan_configs/conf/managed-schema
 # maybe if this is a copy, it will be copied over and we can save some work?
-sudo ln -s /usr/lib/ckan/default/src/ckan/ckan/config/solr/schema.xml /opt/solr/server/solr/configsets/default_ckan_configs/conf/schema.xml
+# sudo ln -s /usr/lib/ckan/default/src/ckan/ckan/config/solr/schema.xml /opt/solr/server/solr/configsets/default_ckan_configs/conf/schema.xml
+cp /usr/lib/ckan/default/src/ckan/ckan/config/solr/schema.xml /opt/solr/server/solr/configsets/default_ckan_configs/conf/schema.xml
 
 sudo service jetty9 restart
 
