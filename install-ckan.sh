@@ -142,6 +142,9 @@ paster --plugin=ckan datastore set-permissions -c /etc/ckan/default/development.
 
 # Get ready for tests
 
+pip install -r /usr/lib/ckan/default/src/ckan/dev-requirements.txt
+pip install -r /usr/lib/ckan/default/src/ckan/pip-requirements-docs.txt
+
 sudo -u postgres createdb -O ckan_default ckan_test -E utf-8
 sudo -u postgres createdb -O ckan_default datastore_test -E utf-8
 paster --plugin=ckan datastore set-permissions -c ~/ckan/lib/default/src/ckan/test-core.ini | sudo -u postgres psql
